@@ -19,7 +19,6 @@ class Loading extends State {}
 class Success extends State {}
 
 class RandomDelayBloc extends Bloc<RandomDelayEvent, State> {
-
   RandomDelayBloc() : super(Initial()) {
     completeOn<RandomDelayEvent>((event, emit) async {
       emit(Loading());
@@ -36,7 +35,8 @@ void main() {
   blocTest("RandomDelayBloc",
       build: () => RandomDelayBloc(),
       act: (bloc) async {
-        await bloc.addToComplete(RandomDelayEvent());
+        await bloc.addToComplete(RandomDelayEvent(),
+            timeout: const Duration(milliseconds: 2500));
       },
       expect: () => [Loading(), Success()]);
 }
