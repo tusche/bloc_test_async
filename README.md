@@ -6,11 +6,12 @@ using [bloc_test](https://pub.dev/packages/bloc_test).
 [bloc_test](https://pub.dev/packages/bloc_test) provides a `wait` parameter to delay the execution
 of the `expect` block to test
 async operations.
+
 When the async operation takes longer than the `wait` duration, the test fails as not all
-states defined in `expected` have been emitted.
+states defined in `expected` have been emitted on time.
 
 Thus the `wait` parameter has to be set to a static, estimated duration.
-If the underlying async operation takes longer than this duration the test will fail.
+This is problematic as any changes affecting the actual duration might need an adjustment of the `wait` duration.
 
 # The solution
 
@@ -31,7 +32,7 @@ await the completion of the event in the bloc.
 The `wait` parameter is left out as it is ensured that the events added in `act` have been
 completed.
 
-#Migrating your tests
+# Migrating
 
 ## Bloc
 
@@ -56,8 +57,8 @@ behaves just like `on`.
 
 ## blocTest
 
-In your `blocTest` remove the `wait` parameter and use `await addToComplete()` instead of `add()` in
-the `act` block.
+In your `blocTest` remove the `wait` parameter if necessary and use `await addToComplete()` instead of `add()` in
+the `act` block. The `act` block must be defined as `async` to use `await`.
 
 ```
   blocTest("MyBloc",
@@ -71,8 +72,22 @@ the `act` block.
 
 When `addToComplete` is used outside of a test context, an exception is thrown.
 
-That`s it. Enjoy.
+# Timeouts
 
+the `addToComplete` method provides a `timeout` parameter to define a timeout for the completion of an event. 
+
+```
+  blocTest("MyBloc",
+      build: () => MyBloc(),
+      act: (bloc) async {
+        await bloc.addToComplete(Event(), timeout: Duration(seconds: 3);
+      },
+      expect: () => [Loading(), Success()]);
+```
+
+The default is set to 5 seconds.
+
+If the timeout occurs, a `TimeoutException` is thrown and the test fails.
 
 
 
