@@ -35,8 +35,7 @@ void main() {
   blocTest("RandomDelayBloc",
       build: () => RandomDelayBloc(),
       act: (bloc) async {
-        await bloc.addToComplete(RandomDelayEvent(),
-            timeout: const Duration(milliseconds: 2500));
+        await bloc.addToComplete(RandomDelayEvent());
       },
       expect: () => [Loading(), Success()]);
 }

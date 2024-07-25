@@ -18,7 +18,7 @@ This is problematic as any changes affecting the actual duration might need an a
 Use the `bloc_test_async` package to ditch the `wait` parameter and instead await the completion of
 events.
 
-```
+```dart
   blocTest("ExampleBloc",
       build: () => ExampleBloc(),
       act: (bloc) async {
@@ -34,12 +34,19 @@ completed.
 
 # Migrating
 
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  bloc_test_async: ^0.1.0
+```
+
 ## Bloc
 
 Your bloc implementation has to be adjusted to complete events to use `addToComplete` in your test.
 Simply adjust your calls from `on` to `completeOn`:
 
-```
+```dart
 class MyBloc extends Bloc<Event, State> {
     MyBloc() : super(Initial()) {
         //previously on<Event>((event, emit)
@@ -47,7 +54,7 @@ class MyBloc extends Bloc<Event, State> {
             emit(Loading());
             // do stuff
             emit(Success());
-        }
+        });
     }
 }
 ```
@@ -60,7 +67,7 @@ behaves just like `on`.
 In your `blocTest` remove the `wait` parameter if necessary and use `await addToComplete()` instead of `add()` in
 the `act` block. The `act` block must be defined as `async` to use `await`.
 
-```
+```dart
   blocTest("MyBloc",
       build: () => MyBloc(),
       act: (bloc) async {
@@ -76,11 +83,11 @@ When `addToComplete` is used outside of a test context, an exception is thrown.
 
 the `addToComplete` method provides a `timeout` parameter to define a timeout for the completion of an event. 
 
-```
+```dart
   blocTest("MyBloc",
       build: () => MyBloc(),
       act: (bloc) async {
-        await bloc.addToComplete(Event(), timeout: Duration(seconds: 3);
+        await bloc.addToComplete(Event(), timeout: Duration(seconds: 3));
       },
       expect: () => [Loading(), Success()]);
 ```

@@ -1,7 +1,7 @@
 name: bloc_test_async
-description: "A new Flutter project."
-publish_to: 'none'
+description: "A bloc extension to test async operations using bloc_test."
 version: 0.1.0
+repository: https://github.com/tusche/bloc_test_async
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
