@@ -1,6 +1,6 @@
 name: bloc_test_async
 description: "A bloc extension to test async operations using bloc_test."
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/tusche/bloc_test_async
 
 environment:
