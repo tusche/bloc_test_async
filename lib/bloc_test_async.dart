@@ -15,9 +15,6 @@ extension Complete<Event, State> on Bloc<Event, State> {
   }) {
     on((event, emit) async {
       await handler(event, emit);
-      if (!_isTesting()) {
-        return;
-      }
       EventCompleters eventCompleters = _getEventCompleters();
       Completer? completer = eventCompleters.map[event];
       if (completer != null) {
@@ -29,9 +26,6 @@ extension Complete<Event, State> on Bloc<Event, State> {
 
   Future<void> addToComplete(Event event,
       {Duration timeout = const Duration(seconds: 30)}) {
-    if (!_isTesting()) {
-      throw "addToComplete() should be used only in unit tests";
-    }
     EventCompleters eventCompleters = _getEventCompleters();
     Map<dynamic, Completer> map = eventCompleters.map;
     if (map.containsKey(event)) {
@@ -42,8 +36,6 @@ extension Complete<Event, State> on Bloc<Event, State> {
     add(event);
     return completer.future.timeout(timeout);
   }
-
-  bool _isTesting() => Platform.environment.containsKey('FLUTTER_TEST');
 
   EventCompleters _getEventCompleters() {
     var getIt = GetIt.instance;
